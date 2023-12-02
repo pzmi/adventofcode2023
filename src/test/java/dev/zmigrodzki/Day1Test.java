@@ -14,9 +14,11 @@ class Day1Test {
     @Test
     void sumAllCalibrationValues() {
         var input = """
-                a1b2c
-                z2x3x""";
+                aonebtwoc
+                z2x3x
+                1two3four
+                four95qvkvveight5""";
         var summedAllCalibrationValues = Day1.sumAllCalibrationValues(input);
-        assertThat(summedAllCalibrationValues).isEqualTo(12 + 23);
+        assertThat(summedAllCalibrationValues).isEqualTo(12 + 23 + 14 + 45);
     }
 }
