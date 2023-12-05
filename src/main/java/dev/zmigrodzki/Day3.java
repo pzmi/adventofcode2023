@@ -47,20 +47,22 @@ public class Day3 {
         for (int row = 0; row < schematic.length; row++) {
             for (int col = 0; col < schematic[row].length; col++) {
                 if (schematic[row][col] == '*') {
-                    var isMaybeGear = neighboursOf(row, col).stream()
-                            .allMatch(l -> Character.isDigit(schematic[l.row()][l.col()]) || schematic[l.row()][l.col()] == '.');
+                    var neighbours = neighboursOf(row, col);
+                    var neighboursInRange = neighbours.stream().filter(l -> inRange(schematic, l.row(), l.col())).toList();
+                    var isMaybeGear = neighboursInRange.stream()
+                            .allMatch(l -> Character.isDigit(schematic[l.row()][l.col()]) || schematic[l.row()][l.col()] == '.' || schematic[l.row()][l.col()] == '*' );
 
                     if (!isMaybeGear) {
                         continue;
                     }
 
-                    var adjacentPartNumbers = neighboursOf(row, col).stream()
+                    var adjacentPartNumbers = neighboursInRange.stream()
                             .filter(l -> Character.isDigit(schematic[l.row()][l.col()]))
                             .map(l -> parsePartNumber(schematic, l.row(), l.col()))
                             .distinct()
                             .toList();
                     if (adjacentPartNumbers.size() == 2) {
-                        sum += adjacentPartNumbers.get(0).number() * adjacentPartNumbers.get(1).number();
+                        sum += (long) adjacentPartNumbers.get(0).number() * adjacentPartNumbers.get(1).number();
                     }
                 }
             }
@@ -105,17 +107,18 @@ public class Day3 {
         var maxRow = matrix.length - 1;
         var maxCol = matrix[0].length - 1;
 
-        return row >= 0 && col >= 0 && row <= maxRow && col < maxCol;
+        return row >= 0 && col >= 0 && row <= maxRow && col <= maxCol;
     }
 
     private static List<Location> neighboursOf(int row, int col) {
         return List.of(
                 new Location(row - 1, col - 1), // top left
-                new Location(row, col - 1), // top
-                new Location(row + 1, col - 1), // top right
-                new Location(row + 1, col), // right
+                new Location(row - 1, col), // top
+                new Location(row - 1, col + 1), // top right
+                new Location(row, col + 1), // right
                 new Location(row + 1, col + 1),  // bottom right
-                new Location(row, col + 1), // bottom
-                new Location(row - 1, col + 1));  // bottom
+                new Location(row + 1, col), // bottom
+                new Location(row + 1, col - 1),  // bottom left
+                new Location(row, col - 1));  // left
     }
 }
